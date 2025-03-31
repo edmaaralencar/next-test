@@ -1,79 +1,36 @@
-# 🚀 Teste Técnico – Vaga Part-Time
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-Olá, desenvolvedor(a)! Seja bem-vindo(a) ao repositório vazio que servirá como base para o seu teste. A ideia é que você faça um **fork** deste repositório e implemente as funcionalidades descritas abaixo, mantendo o código final no seu fork.
+## Getting Started
 
----
+First, run the development server:
 
-## ✨ Visão Geral
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-Você deverá desenvolver o projeto utilizando:
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-- **Next.js**  
-- **TypeScript**  
-- **Tailwind CSS**  
-- **Prisma**  
-- **shadcn**  
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-No final, seu projeto deve ficar **no seu fork** e ser **implantado na Vercel**.
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
----
+## Learn More
 
-## 📝 O que deve ser desenvolvido
+To learn more about Next.js, take a look at the following resources:
 
-1. **Tabela de Gerenciamento de Tarefas**  
-   - Título, descrição e status (ex.: “A Fazer”, “Em Andamento” ou “Concluída”).  
-   - Operações de criação, edição, exclusão e listagem em uma tabela.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-2. **Dashboard de Analytics**  
-   - Exibição de estatísticas (número total de tarefas, concluídas vs. pendentes, etc.).  
-   - Pelo menos um gráfico ou algum outro tipo de visualização de dados.
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-3. **Prioridade de Tarefas**  
-   - Cada tarefa deve ter uma prioridade (ex.: alta, média, baixa).
+## Deploy on Vercel
 
-4. **Duplicar Tarefas**  
-   - Funcionalidade para clonar uma tarefa existente.  
-   - Se houver subtarefas (ver opcionais), elas também devem ser copiadas.
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-5. **Favoritos**  
-   - Possibilidade de marcar tarefas como favoritas, facilitando o acesso.
-
----
-
-## 🌟 Diferenciais (Opcionais)
-
-- **Subtasks**: adicionar subtarefas com título e status.  
-- **Testes Automatizados**: cobertura de testes (unitários, de integração, end-to-end).  
-- **Estados Globais**: uso de Redux, Zustand ou outra forma de gerenciar estado.  
-- **Labels Personalizadas**: para categorizar e filtrar tarefas.  
-- **Outras Funcionalidades Extras**: sinta-se à vontade para inovar!
-
----
-
-## 🔎 Avaliação
-
-- **Qualidade do Código**: organização, clareza e boas práticas.  
-- **Estrutura do Projeto**: forma como arquivos e pastas são organizados.  
-- **UI/UX**: aparência, usabilidade, responsividade.  
-- **Domínio das Tecnologias**: uso de Next.js, TypeScript, Tailwind, Prisma e shadcn.  
-- **Tempo de Execução**: agilidade na entrega do teste.
-
----
-
-## 📦 Como Entregar
-
-1. **Fork** deste repositório.  
-2. Implemente a solução de acordo com os requisitos.  
-3. **Faça o deploy na Vercel** após finalizar o desenvolvimento.  
-4. Mantenha todo o código final **no fork**.  
-5. Inclua no `README.md` (ou em outro arquivo) instruções sobre como instalar e rodar a aplicação localmente.  
-6. **Envie** o **link do seu fork** e o **link da aplicação na Vercel** ao final.
-
----
-
-## 💡 Observações Finais
-
-- Utilize os componentes do **shadcn** para agilizar e padronizar a interface.  
-- Organize o seu código pensando em clareza e manutenção.  
-- Recursos extras ou ideias criativas são bem-vindos.  
-- **Boa sorte e bons commits!** 🚀
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
