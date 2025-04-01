@@ -1,6 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Category } from '@prisma/client'
 import {
   AlertCircle,
   CheckCircle2,
@@ -9,9 +10,11 @@ import {
   ListChecks,
   ListTodo,
   Loader2,
+  Tag,
+  X,
   Zap,
 } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -38,6 +41,17 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 
+import { Badge } from './ui/badge'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from './ui/command'
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
+
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Título é obrigatório' }),
   description: z.string(),
@@ -48,11 +62,13 @@ const formSchema = z.object({
     message: 'Prioridade é obrigatório',
   }),
   subTasks: z.array(z.object({ title: z.string(), isCompleted: z.boolean() })),
+  categories: z.array(z.object({ categoryId: z.string() })),
 })
 
 export type TaskFormInput = z.infer<typeof formSchema>
 
 interface TaskDialogProps {
+  categories: Category[]
   open: boolean
   onOpenChange: (open: boolean) => void
   defaultValues: (TaskFormInput & { id: string }) | null
@@ -64,7 +80,10 @@ export function TaskDialog({
   onOpenChange,
   defaultValues,
   setCurrentTask,
+  categories,
 }: TaskDialogProps) {
+  const [labelPopoverOpen, setLabelPopoverOpen] = useState(false)
+
   const {
     register,
     handleSubmit,
@@ -86,6 +105,7 @@ export function TaskDialog({
           title: item.title,
         })),
         title: defaultValues.title,
+        categories: defaultValues.categories,
       })
     }
   }, [defaultValues, reset])
@@ -93,6 +113,15 @@ export function TaskDialog({
   const { fields, append, remove, update } = useFieldArray({
     control,
     name: 'subTasks',
+  })
+
+  const {
+    fields: fieldsCategories,
+    append: appendCategory,
+    remove: removeCategory,
+  } = useFieldArray({
+    control,
+    name: 'categories',
   })
 
   async function onSubmit(values: TaskFormInput) {
@@ -104,6 +133,7 @@ export function TaskDialog({
         description: values.description,
         subTasks: values.subTasks,
         taskId: defaultValues.id,
+        categories: values.categories,
       })
 
       if (res?.data?.message) {
@@ -122,6 +152,7 @@ export function TaskDialog({
       priority: values.priority,
       description: values.description,
       subTasks: values.subTasks,
+      categories: values.categories,
     })
 
     if (res?.data?.message) {
@@ -303,6 +334,87 @@ export function TaskDialog({
                   </span>
                 )}
               </div>
+            </div>
+
+            <div className="grid gap-2 mt-2">
+              <Label className="text-sm font-medium flex items-center gap-2">
+                <Tag className="h-4 w-4" />
+                Categorias
+              </Label>
+              <div className="flex flex-wrap gap-2 mb-2">
+                {fieldsCategories.length > 0 ? (
+                  fieldsCategories.map((category, index) => (
+                    <Badge
+                      key={category.categoryId}
+                      className="flex items-center gap-1 px-2 py-1"
+                      style={{
+                        backgroundColor: categories.find(
+                          (item) => item.id === category.categoryId,
+                        )?.color,
+                        color: '#fff',
+                      }}
+                    >
+                      {
+                        categories.find(
+                          (item) => item.id === category.categoryId,
+                        )?.name
+                      }
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-4 w-4 p-0 text-white hover:bg-transparent hover:text-white/80"
+                        onClick={() => removeCategory(index)}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </Badge>
+                  ))
+                ) : (
+                  <div className="text-sm text-muted-foreground">
+                    Nenhuma categoria atribuída
+                  </div>
+                )}
+              </div>
+              <Popover
+                open={labelPopoverOpen}
+                onOpenChange={setLabelPopoverOpen}
+              >
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-full justify-start">
+                    <Tag className="mr-2 h-4 w-4" />
+                    Adicionar Categoria
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="p-0" align="start" side="bottom">
+                  <Command>
+                    <CommandInput placeholder="Procure categoria..." />
+                    <CommandList>
+                      <CommandEmpty>Nenhuma categoria encontrada.</CommandEmpty>
+                      <CommandGroup>
+                        {categories.map((category, index) => (
+                          <CommandItem
+                            key={category.id}
+                            onSelect={() =>
+                              fieldsCategories.find(
+                                (item) => item.id === category.id,
+                              )
+                                ? removeCategory(index)
+                                : appendCategory({ categoryId: category.id })
+                            }
+                            className="flex items-center gap-2 cursor-pointer"
+                          >
+                            <div
+                              className="w-3 h-3 rounded-full"
+                              style={{ backgroundColor: category.color }}
+                            ></div>
+                            {category.name}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             </div>
 
             <div className="grid gap-2 mt-2">

@@ -20,12 +20,36 @@ export const updateTask = actionClient
           isCompleted: z.boolean(),
         }),
       ),
+      categories: z.array(z.object({ categoryId: z.string() })),
     }),
   )
   .action(
     async ({
-      parsedInput: { taskId, title, description, priority, status, subTasks },
+      parsedInput: {
+        taskId,
+        title,
+        description,
+        priority,
+        status,
+        subTasks,
+        categories,
+      },
     }) => {
+      const taskExists = await prisma.task.findUnique({
+        where: {
+          id: taskId,
+        },
+        include: {
+          categories: true,
+        },
+      })
+
+      if (!taskExists) {
+        return {
+          message: 'Tarefa não existe.',
+        }
+      }
+
       await prisma.subTask.deleteMany({
         where: {
           taskId,
@@ -48,6 +72,14 @@ export const updateTask = actionClient
                 title: item.title,
               })),
             },
+          },
+          categories: {
+            disconnect: taskExists.categories.map((item) => ({
+              id: item.id,
+            })),
+            connect: categories.map((item) => ({
+              id: item.categoryId,
+            })),
           },
         },
       })

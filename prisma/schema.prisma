@@ -21,7 +21,8 @@ model Task {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  subTasks SubTask[]
+  subTasks   SubTask[]
+  categories Category[]
 
   @@map("tasks")
 }
@@ -36,4 +37,14 @@ model SubTask {
   task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
   @@map("sub_tasks")
+}
+
+model Category {
+  id    String @id @default(uuid())
+  name  String
+  color String
+
+  task Task[]
+
+  @@map("categories")
 }

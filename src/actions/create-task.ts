@@ -16,11 +16,19 @@ export const createTask = actionClient
       subTasks: z.array(
         z.object({ title: z.string(), isCompleted: z.boolean() }),
       ),
+      categories: z.array(z.object({ categoryId: z.string() })),
     }),
   )
   .action(
     async ({
-      parsedInput: { title, description, priority, status, subTasks },
+      parsedInput: {
+        title,
+        description,
+        priority,
+        status,
+        subTasks,
+        categories,
+      },
     }) => {
       const task = await prisma.task.create({
         data: {
@@ -35,6 +43,11 @@ export const createTask = actionClient
                 title: item.title,
               })),
             },
+          },
+          categories: {
+            connect: categories.map((item) => ({
+              id: item.categoryId,
+            })),
           },
         },
       })

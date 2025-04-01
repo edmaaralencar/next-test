@@ -2,7 +2,7 @@
 
 import { CheckCircle2, Clock, ListChecks, ListTodo } from 'lucide-react'
 
-import { TaskWithSubTask } from '@/app/page'
+import { ITask } from '@/app/page'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Bar,
@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/chart'
 
 interface AnalyticsProps {
-  tasks: TaskWithSubTask[]
+  tasks: ITask[]
 }
 
 export function Analytics({ tasks }: AnalyticsProps) {

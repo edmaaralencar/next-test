@@ -1,4 +1,4 @@
-import { SubTask, Task } from '@prisma/client'
+import { Category, SubTask, Task } from '@prisma/client'
 import type { Metadata } from 'next'
 
 import Dashboard from '@/components/dashboard'
@@ -8,16 +8,20 @@ export const metadata: Metadata = {
   title: 'Gerenciamento de Tarefas',
 }
 
-export type TaskWithSubTask = Task & {
+export interface ITask extends Task {
   subTasks: SubTask[]
+  categories: Category[]
 }
 
 export default async function Home() {
   const tasks = await prisma.task.findMany({
     include: {
       subTasks: true,
+      categories: true,
     },
   })
+
+  const categories = await prisma.category.findMany({})
 
   return (
     <div className="min-h-screen">
@@ -26,6 +30,7 @@ export default async function Home() {
           ...item,
           subTasks: item?.subTasks ?? [],
         }))}
+        categories={categories}
       />
     </div>
   )

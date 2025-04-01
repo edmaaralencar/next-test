@@ -1,6 +1,6 @@
 'use client'
 
-import { SubTask } from '@prisma/client'
+import { Category, SubTask } from '@prisma/client'
 import {
   ChevronDown,
   ChevronRight,
@@ -20,7 +20,7 @@ import { toast } from 'sonner'
 import { deleteTask } from '@/actions/delete-task'
 import { duplicateTask } from '@/actions/duplicate-task'
 import { toggleTaskFavorite } from '@/actions/toggle-task-favorite'
-import { TaskWithSubTask } from '@/app/page'
+import { ITask } from '@/app/page'
 import { TaskDialog, TaskFormInput } from '@/components/task-dialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -43,11 +43,12 @@ import { formatDate, getPriorityColor, getStatusColor } from '@/lib/utils'
 
 import { SubTaskRow } from './sub-task-row'
 
-interface TaskTableProps {
-  tasks: TaskWithSubTask[]
+type TaskTableProps = {
+  tasks: ITask[]
+  categories: Category[]
 }
 
-export function TaskTable({ tasks }: TaskTableProps) {
+export function TaskTable({ tasks, categories }: TaskTableProps) {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [currentTask, setCurrentTask] = useState<
     (TaskFormInput & { id: string }) | null
@@ -55,7 +56,7 @@ export function TaskTable({ tasks }: TaskTableProps) {
   const [filter, setFilter] = useState<'all' | 'favorites'>('all')
   const [expandedTasks, setExpandedTasks] = useState<Set<string>>(new Set())
 
-  function handleEdit(task: TaskWithSubTask) {
+  function handleEdit(task: ITask) {
     setCurrentTask({
       description: task.description ?? '',
       priority: task.priority,
@@ -63,6 +64,9 @@ export function TaskTable({ tasks }: TaskTableProps) {
       subTasks: task.subTasks,
       title: task.title,
       id: task.id,
+      categories: task.categories.map((item) => ({
+        categoryId: item.id,
+      })),
     })
 
     setIsCreateDialogOpen(true)
@@ -169,6 +173,7 @@ export function TaskTable({ tasks }: TaskTableProps) {
                 <TableHead className="min-w-[150px]">Título</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Prioridade</TableHead>
+                <TableHead>Categoria(s)</TableHead>
                 <TableHead>Subtarefas</TableHead>
                 <TableHead>Criado em</TableHead>
                 <TableHead className="text-right">Ações</TableHead>
@@ -252,6 +257,28 @@ export function TaskTable({ tasks }: TaskTableProps) {
                         </Badge>
                       </TableCell>
                       <TableCell>
+                        <div className="flex flex-wrap gap-1 max-w-[150px]">
+                          {task.categories.length > 0 ? (
+                            task.categories.map((label) => (
+                              <Badge
+                                key={label.id}
+                                className="px-2 py-0.5 text-xs"
+                                style={{
+                                  backgroundColor: label.color,
+                                  color: '#fff',
+                                }}
+                              >
+                                {label.name}
+                              </Badge>
+                            ))
+                          ) : (
+                            <span className="text-sm text-muted-foreground">
+                              Nenhum
+                            </span>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
                         {task.subTasks.length > 0 ? (
                           <div className="flex items-center gap-1.5">
                             <ListChecks className="h-4 w-4 text-muted-foreground" />
@@ -317,6 +344,7 @@ export function TaskTable({ tasks }: TaskTableProps) {
         onOpenChange={setIsCreateDialogOpen}
         defaultValues={currentTask || null}
         setCurrentTask={setCurrentTask}
+        categories={categories}
       />
     </div>
   )
